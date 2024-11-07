@@ -1,0 +1,271 @@
+{
+  "Pike": {
+    "Season": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+      "March",
+      "April",
+      "May",
+      "September",
+      "October",
+      "November"
+    ],
+    "BestTime": [
+      "Early morning",
+      "Late evening"
+    ],
+    "Weather": [
+      "Overcast",
+      "Partly cloudy"
+    ],
+    "AirPressure": [
+      "Around 1013 mb"
+    ],
+    "WindSpeed": [
+      "5-15 km/h"
+    ],
+    "WaterTemperature": [
+      {
+        "min": "10",
+        "max": "15\u00b0C"
+      }
+    ],
+    "Location": [
+      "Shallow bays",
+      "Near reed beds",
+      "Submerged vegetation",
+      "Drop-offs"
+    ],
+    "BaitAndLures": [
+      "Large spoons",
+      "Soft plastics",
+      "Jerkbaits",
+      "Live bait like roach and perch"
+    ]
+  },
+  "Perch": {
+    "Season": [
+      "May",
+      "June",
+      "September",
+      "October",
+      "November",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September"
+    ],
+    "BestTime": [
+      "Midday",
+      "Late afternoon"
+    ],
+    "Weather": [
+      "Partly sunny",
+      "Overcast"
+    ],
+    "AirPressure": [
+      "1010-1020 mb"
+    ],
+    "WindSpeed": [
+      "5-10 km/h"
+    ],
+    "WaterTemperature": [
+      {
+        "min": "15",
+        "max": "20\u00b0C"
+      }
+    ],
+    "Location": [
+      "Near rocks",
+      "Weed beds",
+      "Submerged structures"
+    ],
+    "BaitAndLures": [
+      "Small jigs",
+      "Spinners",
+      "Soft plastics",
+      "Live bait like worms or small minnows"
+    ]
+  },
+  "BrownTrout": {
+    "Season": [
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September"
+    ],
+    "BestTime": [
+      "Early morning",
+      "Late evening"
+    ],
+    "Weather": [
+      "Cloudy",
+      "Overcast"
+    ],
+    "AirPressure": [
+      "1010-1020 mb"
+    ],
+    "WindSpeed": [
+      "5-10 km/h"
+    ],
+    "WaterTemperature": [
+      {
+        "min": "10",
+        "max": "16\u00b0C"
+      }
+    ],
+    "Location": [
+      "Runs",
+      "Pools",
+      "Shaded spots",
+      "Undercut banks"
+    ],
+    "BaitAndLures": [
+      "Fly patterns during hatches",
+      "Small spinners",
+      "Live bait like worms"
+    ]
+  },
+  "RainbowTrout": {
+    "Season": [
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October"
+    ],
+    "BestTime": [
+      "Late morning",
+      "Early afternoon"
+    ],
+    "Weather": [
+      "Lightly overcast",
+      "Sunny"
+    ],
+    "AirPressure": [
+      "Around 1015 mb"
+    ],
+    "WindSpeed": [
+      "5-15 km/h"
+    ],
+    "WaterTemperature": [
+      {
+        "min": "12",
+        "max": "18\u00b0C"
+      }
+    ],
+    "Location": [
+      "Deeper pools",
+      "Cooler inflows in warmer weather"
+    ],
+    "BaitAndLures": [
+      "Flies",
+      "Spinners",
+      "Small spoons",
+      "Live bait like earthworms or maggots"
+    ]
+  },
+  "Bream": {
+    "Season": [
+      "May",
+      "June",
+      "September",
+      "October",
+      "April-September"
+    ],
+    "BestTime": [
+      "Early morning",
+      "Late evening"
+    ],
+    "Weather": [
+      "Overcast"
+    ],
+    "AirPressure": [
+      "1010-1020 mb"
+    ],
+    "WindSpeed": [
+      "5-10 km/h"
+    ],
+    "WaterTemperature": [
+      {
+        "min": "15",
+        "max": "20\u00b0C"
+      }
+    ],
+    "Location": [
+      "Shallow",
+      "Slow-moving areas with soft, muddy bottoms"
+    ],
+    "BaitAndLures": [
+      "Groundbait mix",
+      "Sweetcorn",
+      "Worms",
+      "Maggots"
+    ]
+  },
+  "Roach": {
+    "Season": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+      "Spring",
+      "Summer"
+    ],
+    "BestTime": [
+      "Early morning",
+      "Evening"
+    ],
+    "Weather": [
+      "Overcast"
+    ],
+    "AirPressure": [
+      "1010-1020 mb"
+    ],
+    "WindSpeed": [
+      "5-10 km/h"
+    ],
+    "WaterTemperature": [
+      {
+        "min": "15",
+        "max": "18\u00b0C"
+      }
+    ],
+    "Location": [
+      "Slow-moving river sections",
+      "Around vegetation",
+      "Weed beds in lakes"
+    ],
+    "BaitAndLures": [
+      "Maggots",
+      "Casters",
+      "Small pellets",
+      "Sweetcorn on light tackle"
+    ]
+  }
+}
