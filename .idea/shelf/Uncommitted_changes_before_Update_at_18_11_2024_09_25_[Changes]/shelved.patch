@@ -1,0 +1,172 @@
+Index: main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import requests\r\nfrom datetime import datetime, timedelta\r\n\r\nAPI_KEY = \"2fd4c84ae5dc94f364025a03e86b7926 \"  # Replace with your API key\r\nLOCATION = \"Limerick,IE\"  # Replace with desired location\r\n\r\n\r\ndef get_weather_data(location):\r\n    \"\"\"Fetch current weather data from OpenWeatherMap.\"\"\"\r\n    url = f\"http://api.openweathermap.org/data/2.5/weather\"\r\n    params = {\r\n        \"q\": location,\r\n        \"appid\": API_KEY,\r\n        \"units\": \"metric\"  # For temperature in Celsius\r\n    }\r\n    response = requests.get(url, params=params)\r\n    if response.status_code == 200:\r\n        return response.json()\r\n    else:\r\n        raise Exception(f\"Failed to fetch weather data: {response.status_code}, {response.text}\")\r\n\r\n\r\ndef parse_weather_data(data):\r\n    \"\"\"Extract relevant weather data.\"\"\"\r\n    temperature = data[\"main\"][\"temp\"]\r\n    air_pressure = data[\"main\"][\"pressure\"]\r\n    wind_speed = data[\"wind\"][\"speed\"] * 3.6  # Convert from m/s to km/h\r\n    cloud_cover = data[\"clouds\"][\"all\"]\r\n    precipitation = data.get(\"rain\", {}).get(\"1h\", 0)  # mm\r\n    precipitation_type = \"Rain\" if \"rain\" in data else \"None\"\r\n    sunrise = datetime.fromtimestamp(data[\"sys\"][\"sunrise\"]).time()\r\n    sunset = datetime.fromtimestamp(data[\"sys\"][\"sunset\"]).time()\r\n\r\n    return {\r\n        \"temperature\": temperature,\r\n        \"air_pressure\": air_pressure,\r\n        \"wind_speed\": wind_speed,\r\n        \"cloud_cover\": cloud_cover,\r\n        \"precipitation\": precipitation,\r\n        \"precipitation_type\": precipitation_type,\r\n        \"sunrise\": sunrise,\r\n        \"sunset\": sunset\r\n    }\r\n\r\n\r\ndef fishing_conditions(\r\n        temperature, air_pressure, wind_speed, cloud_cover,\r\n        precipitation, precipitation_type, sunrise, sunset\r\n):\r\n    fish_preferences = {\r\n        \"Pike\": {\r\n            \"temperature\": (10, 20),\r\n            \"air_pressure\": (1010, 1030),\r\n            \"wind_speed\": (0, 15),\r\n            \"cloud_cover\": (20, 80),\r\n            \"precipitation\": (0, 5),\r\n            \"precipitation_type\": [\"None\", \"Rain\"]\r\n        },\r\n        \"Perch\": {\r\n            \"temperature\": (15, 25),\r\n            \"air_pressure\": (1015, 1025),\r\n            \"wind_speed\": (0, 10),\r\n            \"cloud_cover\": (10, 70),\r\n            \"precipitation\": (0, 3),\r\n            \"precipitation_type\": [\"None\", \"Rain\"]\r\n        },\r\n    }\r\n\r\n    def calculate_score(value, optimal_range, max_score=10):\r\n        if optimal_range[0] <= value <= optimal_range[1]:\r\n            return max_score\r\n        elif value < optimal_range[0]:\r\n            return max(0, max_score - (optimal_range[0] - value))\r\n        else:\r\n            return max(0, max_score - (value - optimal_range[1]))\r\n\r\n    now = datetime.now()\r\n    is_daytime = sunrise <= now.time() <= sunset\r\n\r\n    results = {}\r\n    for fish, prefs in fish_preferences.items():\r\n        scores = [\r\n            calculate_score(temperature, prefs[\"temperature\"]),\r\n            calculate_score(air_pressure, prefs[\"air_pressure\"]),\r\n            calculate_score(wind_speed, prefs[\"wind_speed\"]),\r\n            calculate_score(cloud_cover, prefs[\"cloud_cover\"]),\r\n            calculate_score(precipitation, prefs[\"precipitation\"]),\r\n            10 if precipitation_type in prefs[\"precipitation_type\"] else 0,\r\n            10 if is_daytime else 0\r\n        ]\r\n        results[fish] = sum(scores) / len(scores)\r\n\r\n    return results\r\n\r\n\r\nif __name__ == \"__main__\":\r\n    try:\r\n        weather_data = get_weather_data(LOCATION)\r\n        parsed_data = parse_weather_data(weather_data)\r\n        quality = fishing_conditions(**parsed_data)\r\n\r\n        print(f\"Fishing conditions for {LOCATION} on {datetime.now().strftime('%Y-%m-%d')}:\")\r\n        for fish, score in quality.items():\r\n            print(f\"{fish}: {score:.1f}/10\")\r\n    except Exception as e:\r\n        print(f\"Error: {e}\")\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.py b/main.py
+--- a/main.py	(revision 69e7670615e927d4f668fc8ee6af62f7c1582865)
++++ b/main.py	(date 1731921905313)
+@@ -49,21 +49,101 @@
+ ):
+     fish_preferences = {
+         "Pike": {
+-            "temperature": (10, 20),
+-            "air_pressure": (1010, 1030),
+-            "wind_speed": (0, 15),
+-            "cloud_cover": (20, 80),
+-            "precipitation": (0, 5),
++            "temperature": (10, 20),  # °C
++            "air_pressure": (1010, 1030),  # hPa
++            "wind_speed": (0, 15),  # km/h
++            "cloud_cover": (20, 80),  # percentage
++            "precipitation": (0, 5),  # mm
+             "precipitation_type": ["None", "Rain"]
+         },
+         "Perch": {
+-            "temperature": (15, 25),
+-            "air_pressure": (1015, 1025),
+-            "wind_speed": (0, 10),
+-            "cloud_cover": (10, 70),
+-            "precipitation": (0, 3),
++            "temperature": (15, 25),  # °C
++            "air_pressure": (1015, 1025),  # hPa
++            "wind_speed": (0, 10),  # km/h
++            "cloud_cover": (10, 70),  # percentage
++            "precipitation": (0, 3),  # mm
++            "precipitation_type": ["None", "Rain"]
++        },
++        "Brown Trout": {
++            "temperature": (8, 16),  # °C
++            "air_pressure": (1010, 1025),  # hPa
++            "wind_speed": (0, 12),  # km/h
++            "cloud_cover": (30, 90),  # percentage
++            "precipitation": (0, 8),  # mm
++            "precipitation_type": ["None", "Rain", "Drizzle"]
++        },
++        "Atlantic Salmon": {
++            "temperature": (5, 15),  # °C
++            "air_pressure": (1010, 1020),  # hPa
++            "wind_speed": (0, 15),  # km/h
++            "cloud_cover": (30, 100),  # percentage
++            "precipitation": (0, 10),  # mm
++            "precipitation_type": ["None", "Rain"]
++        },
++        "Roach": {
++            "temperature": (12, 22),  # °C
++            "air_pressure": (1010, 1030),  # hPa
++            "wind_speed": (0, 10),  # km/h
++            "cloud_cover": (10, 60),  # percentage
++            "precipitation": (0, 4),  # mm
++            "precipitation_type": ["None", "Rain"]
++        },
++        "Bream": {
++            "temperature": (12, 22),  # °C
++            "air_pressure": (1012, 1028),  # hPa
++            "wind_speed": (0, 12),  # km/h
++            "cloud_cover": (20, 70),  # percentage
++            "precipitation": (0, 5),  # mm
++            "precipitation_type": ["None", "Rain"]
++        },
++        "Rudd": {
++            "temperature": (15, 25),  # °C
++            "air_pressure": (1010, 1030),  # hPa
++            "wind_speed": (0, 8),  # km/h
++            "cloud_cover": (10, 50),  # percentage
++            "precipitation": (0, 2),  # mm
++            "precipitation_type": ["None", "Rain"]
++        },
++        "Tench": {
++            "temperature": (16, 24),  # °C
++            "air_pressure": (1010, 1028),  # hPa
++            "wind_speed": (0, 10),  # km/h
++            "cloud_cover": (15, 60),  # percentage
++            "precipitation": (0, 3),  # mm
++            "precipitation_type": ["None", "Rain"]
++        },
++        "Eel": {
++            "temperature": (10, 20),  # °C
++            "air_pressure": (1010, 1025),  # hPa
++            "wind_speed": (0, 12),  # km/h
++            "cloud_cover": (30, 80),  # percentage
++            "precipitation": (0, 5),  # mm
++            "precipitation_type": ["None", "Rain"]
++        },
++        "Dace": {
++            "temperature": (12, 20),  # °C
++            "air_pressure": (1010, 1025),  # hPa
++            "wind_speed": (0, 10),  # km/h
++            "cloud_cover": (10, 60),  # percentage
++            "precipitation": (0, 4),  # mm
++            "precipitation_type": ["None", "Rain"]
++        },
++        "Chub": {
++            "temperature": (10, 20),  # °C
++            "air_pressure": (1010, 1025),  # hPa
++            "wind_speed": (0, 15),  # km/h
++            "cloud_cover": (20, 80),  # percentage
++            "precipitation": (0, 6),  # mm
++            "precipitation_type": ["None", "Rain"]
++        },
++        "Gudgeon": {
++            "temperature": (10, 20),  # °C
++            "air_pressure": (1010, 1030),  # hPa
++            "wind_speed": (0, 8),  # km/h
++            "cloud_cover": (20, 70),  # percentage
++            "precipitation": (0, 2),  # mm
+             "precipitation_type": ["None", "Rain"]
+-        },
++        }
+     }
+ 
+     def calculate_score(value, optimal_range, max_score=10):
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"044df24c-f6d5-4562-866d-75d471ec5659\" name=\"Changes\" comment=\"Start\">\r\n      <change afterPath=\"$PROJECT_DIR$/WeatherData.py\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/weather.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/conditions.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/conditions.json\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"RESET_MODE\" value=\"MIXED\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;lucak0909&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/lucak0909/FishingConditions&quot;,\r\n    &quot;accountId&quot;: &quot;c134a5c8-66e2-49b4-b9e3-0fd563a2d0aa&quot;\r\n  }\r\n}</component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 2\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2oX5tIsu7UzcWS7g1QrH5ZIFsP8\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"Python.WeatherData.executor\": \"Run\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"git-widget-placeholder\": \"master\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\lucak\\PycharmProjects\\FishingConditions\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-98f27166c754-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.21829.153\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"044df24c-f6d5-4562-866d-75d471ec5659\" name=\"Changes\" comment=\"\" />\r\n      <created>1731003292645</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1731003292645</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Start\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1731005083375</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1731005083375</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"Start\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1731005449754</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1731005449754</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"Start\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1731005617838</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1731005617838</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"4\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Start\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Start\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 69e7670615e927d4f668fc8ee6af62f7c1582865)
++++ b/.idea/workspace.xml	(date 1731921839487)
+@@ -4,12 +4,7 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="Start">
+-      <change afterPath="$PROJECT_DIR$/WeatherData.py" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/weather.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/conditions.json" beforeDir="false" afterPath="$PROJECT_DIR$/conditions.json" afterDir="false" />
+-    </list>
++    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="Start" />
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -50,6 +45,7 @@
+   <component name="PropertiesComponent"><![CDATA[{
+   "keyToString": {
+     "Python.WeatherData.executor": "Run",
++    "Python.main.executor": "Run",
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+     "git-widget-placeholder": "master"
+   }
+@@ -99,7 +95,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1731005617838</updated>
+     </task>
+-    <option name="localTasksCounter" value="4" />
++    <task id="LOCAL-00004" summary="Start">
++      <option name="closed" value="true" />
++      <created>1731921812771</created>
++      <option name="number" value="00004" />
++      <option name="presentableId" value="LOCAL-00004" />
++      <option name="project" value="LOCAL" />
++      <updated>1731921812771</updated>
++    </task>
++    <option name="localTasksCounter" value="5" />
+     <servers />
+   </component>
+   <component name="Vcs.Log.Tabs.Properties">
