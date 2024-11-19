@@ -8,10 +8,6 @@ import time
 import preferences
 
 API_KEY = "2fd4c84ae5dc94f364025a03e86b7926"  # Replace with your API key
-location = input("\nEnter your desired fishing location\n>>> ").lower()
-while not location.isalpha():
-    location = input("\nInvalid input. Please enter your desired fishing location\n>>> ").lower()
-location = location[0].upper() + location[1:].lower() + ",IE"
 fileName = "Conditions.csv"
 
 def get_weather_data(location):
@@ -25,6 +21,8 @@ def get_weather_data(location):
     response = requests.get(url, params=params)
     if response.status_code == 200:
         return response.json()
+    elif response.status_code == 404:  # City not found
+        raise ValueError("City not found. Please check your spelling.")
     else:
         raise Exception(f"\nFailed to fetch weather data: {response.status_code}, {response.text}")
 
@@ -82,39 +80,38 @@ def fishing_conditions(
 
     return results
 
-def listConditions():
+def listConditions(location, quality):
     print(f"\nFishing conditions for {location} on {datetime.now().strftime('%d/%m/%Y')}:")
     for fish, score in quality.items():
         print(f"{fish}: {score:.1f}/10")
 
-def showGraph(df, df2=None):
+def showGraph(dfs, locations):
     """Creating the bar graph visualization of the dataset"""
     plt.figure(figsize=(10, 6))
 
-    if df2 is not None:  # Compare mode
-        bar_width = 0.35
-        index = df.index
-        plt.bar(index, df['Score'], bar_width, color='skyblue', label=location)
-        plt.bar(index + bar_width, df2['Score'], bar_width, color='lightcoral', label=location2)
-        plt.xticks(index + bar_width / 2, df['Fish'], rotation=45, ha="right")
-        plt.legend()
-    else:  # Single location mode
-        plt.bar(df['Fish'], df['Score'], color='skyblue', width=0.6)
-        plt.xticks(rotation=45, ha="right")
+    num_locations = len(dfs)
+    bar_width = 0.8 / num_locations  # Adjust bar width based on number of locations
+    index = dfs[0].index
+    colors = plt.colormaps['viridis'](range(num_locations))  # Use a colormap for distinct colors
+
+    for i, df in enumerate(dfs):
+        plt.bar(index + i * bar_width, df['Score'], bar_width, color=colors[i], label=locations[i])
+
+    plt.xticks(index + bar_width * (num_locations - 1) / 2, dfs[0]['Fish'], rotation=45, ha="right")
+    plt.legend()
 
     plt.style.use('dark_background')
     plt.gca().spines['top'].set_visible(False)
     plt.gca().spines['right'].set_visible(False)
     plt.xlabel("Fish", fontsize=12)
     plt.ylabel("Score", fontsize=12)
-    plt.title(f"Fishing Conditions in {location}" if df2 is None else
-              f"Fishing Conditions in {location} vs {location2}", fontsize=14)
+    plt.title(f"Fishing Conditions in {', '.join(locations)}", fontsize=14)
     plt.grid(axis='y', alpha=0.7)
     plt.ylim(0, 10)
     plt.tight_layout()
     plt.show()
 
-def selectFish():
+def selectFish(df):
     while True:
         fish = input("\nEnter the name of the fish you want to see the data for (or enter 'exit' to return back to choices): \n>>> ").lower()
         while fish.lower() not in df["Fish"].str.lower().tolist() + ["exit"]:
@@ -152,45 +149,45 @@ def selectFish():
         time.sleep(5)
 
 def compareLocations():
-    global location2  # Declare location2 as global
-    choice = input("\nDo you want to compare the current location with another? (y/n): ").lower()
-    if choice == 'y':
-        location2 = input("\nEnter the second location: ").lower()
-        while not location2.isalpha():
-            location2 = input("\nInvalid input. Please enter your desired fishing location\n>>> ").lower()
-        location2 = location2[0].upper() + location2[1:].lower() + ",IE"
+    num_locations = input("\nEnter how many locations do you want to compare:\n>>> ")
+    while num_locations not in ["2","3","4","5","6","7","8","9","10"]:
+        num_locations = input("\nInvalid input. Please enter a positive integer greater between 2 and 10:\n>>> ")
+    num_locations = int(num_locations)
+    locations = []
+    dfs = []
 
-        try:
-            weather_data2 = get_weather_data(location2)
-            parsed_data2 = parse_weather_data(weather_data2)
-            quality2 = fishing_conditions(**parsed_data2, fish_preferences=fish_preferences)
-
-            with open("Conditions2.csv", "w", newline="") as csvfile:
-                writer = csv.writer(csvfile)
-                writer.writerow(["Fish", "Score"])  # Write header row
-                for fish, score in quality2.items():
-                    writer.writerow([fish, f"{score:.1f}"])
-
+    for i in range(num_locations):
+        while True:
             try:
-                df2 = pd.read_csv("Conditions2.csv")
-                showGraph(df, df2)  # Pass both DataFrames to showGraph
-            except FileNotFoundError:
-                print(f"\nError: File not found at 'Conditions2.csv'. Please check the path.")
-                exit()
+                location = input(f"\nEnter location {i + 1}: ").lower()
+                while not location.isalpha():
+                    location = input("\nInvalid input. Please enter your desired fishing location\n>>> ").lower()
+                location = location[0].upper() + location[1:].lower() + ",IE"
 
-        except Exception as e:
-            print(f"Error: {e}")
-    elif choice == 'n':
-        main()
-    elif choice == 'e':
-        location = input("\nEnter your desired fishing location\n>>> ").lower()
-        while not location.isalpha():
-            location = input("\nInvalid input. Please enter your desired fishing location\n>>> ").lower()
-        location = location[0].upper() + location[1:].lower() + ",IE"
-        compareLocations()  # Call compareLocations again for a new location input
-    else:
-        print("\nInvalid input. Please enter 'y', 'n' or 'e'")
-        compareLocations()
+                weather_data = get_weather_data(location)
+                parsed_data = parse_weather_data(weather_data)
+                quality = fishing_conditions(**parsed_data, fish_preferences=fish_preferences)
+
+                with open("Conditions.csv", "w", newline="") as csvfile:
+                    writer = csv.writer(csvfile)
+                    writer.writerow(["Fish", "Score"])  # Write header row
+                    for fish, score in quality.items():
+                        writer.writerow([fish, f"{score:.1f}"])
+
+                df = pd.read_csv("Conditions.csv")
+                dfs.append(df)
+                locations.append(location)
+                break  # Break the loop if no exception is raised
+
+            except ValueError as e:
+                print(f"\nError: {e}")
+            except FileNotFoundError:
+                print(f"\nError: File not found at 'Conditions.csv'. Please check the path.")
+                exit()
+            except Exception as e:
+                print(f"Error: {e}")
+
+    showGraph(dfs, locations)
 
 def main():
     mode = input("\nWould you like to do: (a) List Data; (b) Graph Data; (c) Select Data; (d) Compare Locations; (e) EXIT\n>>> ")
@@ -199,14 +196,14 @@ def main():
     mode = mode.lower()
 
     if mode == "a":
-        listConditions()
+        listConditions(location, quality)
         time.sleep(5)
         main()
     elif mode == "b":
-        showGraph(df)
+        showGraph([df], [location])  # Pass single DataFrame as a list
         main()
     elif mode == "c":
-        selectFish()
+        selectFish(df)
         main()
     elif mode == "d":
         compareLocations()
@@ -222,26 +219,33 @@ def main():
         exit()
 
 if __name__ == "__main__":
-    try:
-        weather_data = get_weather_data(location)
-        parsed_data = parse_weather_data(weather_data)
-        fish_preferences = preferences.get_fish_preferences()
-        quality = fishing_conditions(**parsed_data, fish_preferences=fish_preferences)
-
-        with open("Conditions.csv", "w", newline="") as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow(["Fish", "Score"])  # Write header row
-            for fish, score in quality.items():
-                now = datetime.now()
-                writer.writerow([fish, f"{score:.1f}"])
-
+    while True:
         try:
-            df = pd.read_csv(fileName)  # Read the CSV into a pandas DataFrame
-        except FileNotFoundError:
-            print(f"\nError: File not found at '{fileName}'. Please check the path.")
-            exit()
+            location = input("\nEnter your desired fishing location\n>>> ").lower()
+            while not location.isalpha():
+                location = input("\nInvalid input. Please enter your desired fishing location\n>>> ").lower()
+            location = location[0].upper() + location[1:].lower() + ",IE"
 
-        main()
+            weather_data = get_weather_data(location)
+            parsed_data = parse_weather_data(weather_data)
+            fish_preferences = preferences.get_fish_preferences()
+            quality = fishing_conditions(**parsed_data, fish_preferences=fish_preferences)
 
-    except Exception as e:
-        print(f"Error: {e}")
+            with open("Conditions.csv", "w", newline="") as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow(["Fish", "Score"])  # Write header row
+                for fish, score in quality.items():
+                    now = datetime.now()
+                    writer.writerow([fish, f"{score:.1f}"])
+
+            try:
+                df = pd.read_csv(fileName)  # Read the CSV into a pandas DataFrame
+            except FileNotFoundError:
+                print(f"\nError: File not found at '{fileName}'. Please check the path.")
+                exit()
+
+            main()
+            break  # Break the loop if no exception is raised
+
+        except ValueError as e:
+            print(f"\nError: {e}")
