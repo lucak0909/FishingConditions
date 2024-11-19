@@ -7,7 +7,10 @@ import time
 import preferences
 
 API_KEY = "2fd4c84ae5dc94f364025a03e86b7926"  # Replace with your API key
-LOCATION = "Limerick,IE"  # Replace with desired location
+location = input("Enter your desired fishing location\n>>> ").lower()
+while not location.isalpha():
+    location = input("Invalid input. Please enter your desired fishing location\n>>> ").lower()
+location = location[0].upper() + location[1:].lower() + ",IE"
 fileName = "Conditions.csv"
 
 
@@ -81,7 +84,7 @@ def fishing_conditions(
 
 
 def listConditions():
-    print(f"Fishing conditions for {LOCATION} on {datetime.now().strftime('%d/%m/%Y')}:")
+    print(f"Fishing conditions for {location} on {datetime.now().strftime('%d/%m/%Y')}:")
     for fish, score in quality.items():
         print(f"{fish}: {score:.1f}/10")
 
@@ -96,7 +99,7 @@ def showGraph(df):
     plt.gca().spines['right'].set_visible(False)
     plt.xlabel("Fish", fontsize=12)
     plt.ylabel("Score", fontsize=12)
-    plt.title("Fishing Conditions in " + LOCATION, fontsize=14)
+    plt.title("Fishing Conditions in " + location, fontsize=14)
     plt.xticks(rotation=45, ha="right")
     plt.grid(axis='y', alpha=0.7)
     plt.ylim(0, 10)
@@ -107,36 +110,38 @@ def showGraph(df):
 def selectFish():
     while True:
         fish = input("Enter the name of the fish you want to see the data for (or enter 'exit' to return back to choices): \n>>> ").lower()
-        while fish not in [str(df["Fish"]).lower(), "exit"]:
+        while fish.lower() not in df["Fish"].str.lower().tolist() + ["exit"]:
             print(f"Error: Fish '{fish}' not found in the data.\n")
             fish = input("Please enter a valid Irish freshwater fish species:"
                          "\n(Pike, Perch, Brown Trout, Atlantic Salmon, Roach, "
                          "Bream, Rudd, Tench, Eel, Dace, Chub, Gudgeon)\n>>> ").lower()
 
+            print(fish)
+
         if fish == "pike":
-            print(f"Fish: Pike\nScore: {df.loc[df['Fish'] == 'Pike', 'Score'].item():.1f}/10")
+            print(f"\nFish: Pike\nScore: {df.loc[df['Fish'] == 'Pike', 'Score'].item():.1f}/10")
         elif fish == "perch":
-            print(f"Fish: Perch\nScore: {df.loc[df['Fish'] == 'Perch', 'Score'].item():.1f}/10")
+            print(f"\nFish: Perch\nScore: {df.loc[df['Fish'] == 'Perch', 'Score'].item():.1f}/10")
         elif fish == "brown trout":
-            print(f"Fish: Brown Trout\nScore: {df.loc[df['Fish'] == 'Brown Trout', 'Score'].item():.1f}/10")
+            print(f"\nFish: Brown Trout\nScore: {df.loc[df['Fish'] == 'Brown Trout', 'Score'].item():.1f}/10")
         elif fish == "atlantic salmon":
-            print(f"Fish: Atlantic Salmon\nScore: {df.loc[df['Fish'] == 'Atlantic Salmon', 'Score'].item():.1f}/10")
+            print(f"\nFish: Atlantic Salmon\nScore: {df.loc[df['Fish'] == 'Atlantic Salmon', 'Score'].item():.1f}/10")
         elif fish == "roach":
-            print(f"Fish: Roach\nScore: {df.loc[df['Fish'] == 'Roach', 'Score'].item():.1f}/10")
+            print(f"\nFish: Roach\nScore: {df.loc[df['Fish'] == 'Roach', 'Score'].item():.1f}/10")
         elif fish == "bream":
-            print(f"Fish: Bream\nScore: {df.loc[df['Fish'] == 'Bream', 'Score'].item():.1f}/10")
+            print(f"\nFish: Bream\nScore: {df.loc[df['Fish'] == 'Bream', 'Score'].item():.1f}/10")
         elif fish == "rudd":
-            print(f"Fish: Rudd\nScore: {df.loc[df['Fish'] == 'Rudd', 'Score'].item():.1f}/10")
+            print(f"\nFish: Rudd\nScore: {df.loc[df['Fish'] == 'Rudd', 'Score'].item():.1f}/10")
         elif fish == "tench":
-            print(f"Fish: Tench\nScore: {df.loc[df['Fish'] == 'Tench', 'Score'].item():.1f}/10")
+            print(f"\nFish: Tench\nScore: {df.loc[df['Fish'] == 'Tench', 'Score'].item():.1f}/10")
         elif fish == "eel":
-            print(f"Fish: Eel\nScore: {df.loc[df['Fish'] == 'Eel', 'Score'].item():.1f}/10")
+            print(f"\nFish: Eel\nScore: {df.loc[df['Fish'] == 'Eel', 'Score'].item():.1f}/10")
         elif fish == "dace":
-            print(f"Fish: Dace\nScore: {df.loc[df['Fish'] == 'Dace', 'Score'].item():.1f}/10")
+            print(f"\nFish: Dace\nScore: {df.loc[df['Fish'] == 'Dace', 'Score'].item():.1f}/10")
         elif fish == "chub":
-            print(f"Fish: Chub\nScore: {df.loc[df['Fish'] == 'Chub', 'Score'].item():.1f}/10")
+            print(f"\nFish: Chub\nScore: {df.loc[df['Fish'] == 'Chub', 'Score'].item():.1f}/10")
         elif fish == "gudgeon":
-            print(f"Fish: Gudgeon\nScore: {df.loc[df['Fish'] == 'Gudgeon', 'Score'].item():.1f}/10")
+            print(f"\nFish: Gudgeon\nScore: {df.loc[df['Fish'] == 'Gudgeon', 'Score'].item():.1f}/10")
         elif fish == "exit":
             break
         time.sleep(5)
@@ -170,7 +175,7 @@ def main():
 
 if __name__ == "__main__":
     try:
-        weather_data = get_weather_data(LOCATION)
+        weather_data = get_weather_data(location)
         parsed_data = parse_weather_data(weather_data)
         # Get fish preferences using the imported function
         fish_preferences = preferences.get_fish_preferences()
