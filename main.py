@@ -92,20 +92,15 @@ def showGraph(df):
     plt.figure(figsize=(10, 6))
     plt.bar(df['Fish'], df['Score'], color='skyblue', width=0.6)
 
-    # Dark mode settings
     plt.style.use('dark_background')
     plt.gca().spines['top'].set_visible(False)
     plt.gca().spines['right'].set_visible(False)
-
     plt.xlabel("Fish", fontsize=12)
     plt.ylabel("Score", fontsize=12)
     plt.title("Fishing Conditions in " + LOCATION, fontsize=14)
     plt.xticks(rotation=45, ha="right")
     plt.grid(axis='y', alpha=0.7)
-
-    # Set y-axis limits
     plt.ylim(0, 10)
-
     plt.tight_layout()
     plt.show()
 
