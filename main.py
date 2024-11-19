@@ -177,15 +177,62 @@ def fishing_conditions(
     return results
 
 
+def listConditions():
+    print(f"Fishing conditions for {LOCATION} on {datetime.now().strftime('%d/%m/%Y')}:")
+    for fish, score in quality.items():
+        print(f"{fish}: {score:.1f}/10")
+
+
+def showGraph(df):
+    """Creating the bar graph visualization of the dataset"""
+    plt.bar(df['Fish'], df['Score'])
+    plt.xlabel("Categories")
+    plt.ylabel("Values")
+    plt.title("Fishing Conditions in " + LOCATION)
+    plt.show()
+
+
+def selectFish():
+    while True:
+        fish = input("Enter the name of the fish you want to see the data for (or enter 'exit' to return back to choices): \n>>> ").lower()
+        while fish not in str(df["Fish"]).lower():
+            print(f"Error: Fish '{fish}' not found in the data.\n")
+            fish = input("Please enter a valid Irish freshwater fish species:"
+                         "\n(Pike, Perch, Brown Trout, Atlantic Salmon, Roach, "
+                         "Bream, Rudd, Tench, Eel, Dace, Chub, Gudgeon)\n>>> ").lower()
+
+        if fish == "pike":
+            print(f"Fish: Pike\nScore: {df.loc[df['Fish'] == 'Pike', 'Score'].item():.1f}/10")
+        elif fish == "perch":
+            print(f"Fish: Perch\nScore: {df.loc[df['Fish'] == 'Perch', 'Score'].item():.1f}/10")
+        elif fish == "brown trout":
+            print(f"Fish: Brown Trout\nScore: {df.loc[df['Fish'] == 'Brown Trout', 'Score'].item():.1f}/10")
+        elif fish == "atlantic salmon":
+            print(f"Fish: Atlantic Salmon\nScore: {df.loc[df['Fish'] == 'Atlantic Salmon', 'Score'].item():.1f}/10")
+        elif fish == "roach":
+            print(f"Fish: Roach\nScore: {df.loc[df['Fish'] == 'Roach', 'Score'].item():.1f}/10")
+        elif fish == "bream":
+            print(f"Fish: Bream\nScore: {df.loc[df['Fish'] == 'Bream', 'Score'].item():.1f}/10")
+        elif fish == "rudd":
+            print(f"Fish: Rudd\nScore: {df.loc[df['Fish'] == 'Rudd', 'Score'].item():.1f}/10")
+        elif fish == "tench":
+            print(f"Fish: Tench\nScore: {df.loc[df['Fish'] == 'Tench', 'Score'].item():.1f}/10")
+        elif fish == "eel":
+            print(f"Fish: Eel\nScore: {df.loc[df['Fish'] == 'Eel', 'Score'].item():.1f}/10")
+        elif fish == "dace":
+            print(f"Fish: Dace\nScore: {df.loc[df['Fish'] == 'Dace', 'Score'].item():.1f}/10")
+        elif fish == "chub":
+            print(f"Fish: Chub\nScore: {df.loc[df['Fish'] == 'Chub', 'Score'].item():.1f}/10")
+        elif fish == "gudgeon":
+            print(f"Fish: Gudgeon\nScore: {df.loc[df['Fish'] == 'Gudgeon', 'Score'].item():.1f}/10")
+        elif fish == "exit":
+            break
+
 if __name__ == "__main__":
     try:
         weather_data = get_weather_data(LOCATION)
         parsed_data = parse_weather_data(weather_data)
         quality = fishing_conditions(**parsed_data)
-
-        print(f"Fishing conditions for {LOCATION} on {datetime.now().strftime('%d/%m/%Y')}:")
-        for fish, score in quality.items():
-            print(f"{fish}: {score:.1f}/10")
 
         # Write the data to the CSV file (overwrites existing data)
         with open("Conditions.csv", "w", newline="") as csvfile:
@@ -201,16 +248,17 @@ if __name__ == "__main__":
             print(f"Error: File not found at '{fileName}'. Please check the path.")
             exit()
 
-        # Create the bar graph
-        plt.bar(df['Fish'], df['Score'])
+        mode = input("Would you like to view: (a) Listed Data; (b) Graphed Data; (c) Individual Data\n>>> ")
+        if mode not in ["a", "b", "c", "A", "B", "C"]:
+            mode = input("This is not a valid input; Please enter either 'a', 'b', or 'c':\n>>> ")
+        mode = mode.lower()
 
-        # Add labels and title
-        plt.xlabel("Categories")
-        plt.ylabel("Values")
-        plt.title("Fishing Conditions in " + LOCATION)
-
-        # Display the graph
-        plt.show()
+        if mode == "a":
+            listConditions()
+        elif mode == "b":
+            showGraph(df)
+        elif mode == "c":
+            selectFish()
 
     except Exception as e:
         print(f"Error: {e}")
