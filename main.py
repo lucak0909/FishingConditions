@@ -1,6 +1,5 @@
 import requests
-
-from datetime import datetime, timedelta
+from datetime import datetime
 import matplotlib.pyplot as plt
 import csv
 import pandas as pd
