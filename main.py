@@ -91,7 +91,6 @@ def showGraph(df):
     # Create the bar graph with dark mode
     plt.figure(figsize=(10, 6))
     plt.bar(df['Fish'], df['Score'], color='skyblue', width=0.6)
-
     plt.style.use('dark_background')
     plt.gca().spines['top'].set_visible(False)
     plt.gca().spines['right'].set_visible(False)
