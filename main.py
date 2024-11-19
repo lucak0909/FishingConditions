@@ -2,9 +2,11 @@ import requests
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import csv
+import pandas as pd
 
 API_KEY = "2fd4c84ae5dc94f364025a03e86b7926"  # Replace with your API key
 LOCATION = "Limerick,IE"  # Replace with desired location
+fileName = "Conditions.csv"
 
 
 def get_weather_data(location):
@@ -192,6 +194,23 @@ if __name__ == "__main__":
             for fish, score in quality.items():
                 now = datetime.now()
                 writer.writerow([fish, f"{score:.1f}"])
+
+        try:
+            df = pd.read_csv(fileName)  # Read the CSV into a pandas DataFrame
+        except FileNotFoundError:
+            print(f"Error: File not found at '{fileName}'. Please check the path.")
+            exit()
+
+        # Create the bar graph
+        plt.bar(df['Fish'], df['Score'])
+
+        # Add labels and title
+        plt.xlabel("Categories")
+        plt.ylabel("Values")
+        plt.title("Fishing Conditions in " + LOCATION)
+
+        # Display the graph
+        plt.show()
 
     except Exception as e:
         print(f"Error: {e}")

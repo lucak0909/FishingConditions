@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="Updated fish species">
+    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="Added csv for visualization data">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -123,7 +123,23 @@
       <option name="project" value="LOCAL" />
       <updated>1731922005887</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Fixed API issue">
+      <option name="closed" value="true" />
+      <created>1732009569291</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1732009569291</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Added csv for visualization data">
+      <option name="closed" value="true" />
+      <created>1732010003572</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1732010003572</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -140,6 +156,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Start" />
     <MESSAGE value="Updated fish species" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated fish species" />
+    <MESSAGE value="Fixed API issue" />
+    <MESSAGE value="Added csv for visualization data" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added csv for visualization data" />
   </component>
 </project>
