@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="improved graph">
+    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="fixed error with selectFish()">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Conditions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Conditions.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
@@ -188,7 +188,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732016404491</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="fixed error with selectFish()">
+      <option name="closed" value="true" />
+      <created>1732017727195</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1732017727195</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -211,6 +219,7 @@
     <MESSAGE value="added different list, graph and select mode" />
     <MESSAGE value="Added menu traversing, and QOL improvements" />
     <MESSAGE value="improved graph" />
-    <option name="LAST_COMMIT_MESSAGE" value="improved graph" />
+    <MESSAGE value="fixed error with selectFish()" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed error with selectFish()" />
   </component>
 </project>
