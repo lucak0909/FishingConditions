@@ -92,11 +92,16 @@ def showGraph(dfs, locations):
     num_locations = len(dfs)
     bar_width = 0.8 / num_locations  # Adjust bar width based on number of locations
     index = dfs[0].index
-    colors = plt.colormaps['viridis'](range(num_locations))  # Use a colormap for distinct colors
+
+    # Define a list of 10 distinct colors
+    colors = ['blue', 'green', 'red', 'purple', 'orange', 'cyan', 'magenta', 'yellow', 'black', 'gray']
 
     for i, df in enumerate(dfs):
-        plt.bar(index + i * bar_width, df['Score'], bar_width, color=colors[i], label=locations[i])
+        # Use the color corresponding to the location's order in the list
+        plt.bar(index + i * bar_width, df['Score'], bar_width, color=colors[i % len(colors)], label=locations[i])
+        plt.draw()  # Force an update of the figure
 
+    # Centering x-ticks correctly
     plt.xticks(index + bar_width * (num_locations - 1) / 2, dfs[0]['Fish'], rotation=45, ha="right")
     plt.legend()
 

@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="Compare mode (2 locations)">
+    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="Working comparison for any number of locations (error with colors on graph)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Conditions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Conditions.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
@@ -204,7 +204,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732026027823</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Working comparison for any number of locations (error with colors on graph)">
+      <option name="closed" value="true" />
+      <created>1732027930149</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1732027930149</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -229,6 +237,7 @@
     <MESSAGE value="improved graph" />
     <MESSAGE value="fixed error with selectFish()" />
     <MESSAGE value="Compare mode (2 locations)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Compare mode (2 locations)" />
+    <MESSAGE value="Working comparison for any number of locations (error with colors on graph)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Working comparison for any number of locations (error with colors on graph)" />
   </component>
 </project>
