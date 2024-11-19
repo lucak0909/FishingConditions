@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 
-API_KEY = "2fd4c84ae5dc94f364025a03e86b7926 "  # Replace with your API key
+API_KEY = "2fd4c84ae5dc94f364025a03e86b7926"  # Replace with your API key
 LOCATION = "Limerick,IE"  # Replace with desired location
 
 
@@ -179,7 +179,7 @@ if __name__ == "__main__":
         parsed_data = parse_weather_data(weather_data)
         quality = fishing_conditions(**parsed_data)
 
-        print(f"Fishing conditions for {LOCATION} on {datetime.now().strftime('%Y-%m-%d')}:")
+        print(f"Fishing conditions for {LOCATION} on {datetime.now().strftime('%d/%m/%Y')}:")
         for fish, score in quality.items():
             print(f"{fish}: {score:.1f}/10")
     except Exception as e:
