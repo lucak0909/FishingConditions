@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="added different list, graph and select mode">
-      <change afterPath="$PROJECT_DIR$/preferences.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="Added menu traversing, and QOL improvements">
+      <change beforePath="$PROJECT_DIR$/Conditions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Conditions.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -156,7 +155,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732013449726</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Added menu traversing, and QOL improvements">
+      <option name="closed" value="true" />
+      <created>1732015866902</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1732015866902</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -177,6 +184,7 @@
     <MESSAGE value="Added csv for visualization data" />
     <MESSAGE value="Added Bar Graph" />
     <MESSAGE value="added different list, graph and select mode" />
-    <option name="LAST_COMMIT_MESSAGE" value="added different list, graph and select mode" />
+    <MESSAGE value="Added menu traversing, and QOL improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added menu traversing, and QOL improvements" />
   </component>
 </project>
