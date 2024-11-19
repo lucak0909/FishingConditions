@@ -1,5 +1,7 @@
 import requests
 from datetime import datetime, timedelta
+import matplotlib.pyplot as plt
+import csv
 
 API_KEY = "2fd4c84ae5dc94f364025a03e86b7926"  # Replace with your API key
 LOCATION = "Limerick,IE"  # Replace with desired location
@@ -182,5 +184,14 @@ if __name__ == "__main__":
         print(f"Fishing conditions for {LOCATION} on {datetime.now().strftime('%d/%m/%Y')}:")
         for fish, score in quality.items():
             print(f"{fish}: {score:.1f}/10")
+
+        # Write the data to the CSV file (overwrites existing data)
+        with open("Conditions.csv", "w", newline="") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(["Fish", "Score"])  # Write header row
+            for fish, score in quality.items():
+                now = datetime.now()
+                writer.writerow([fish, f"{score:.1f}"])
+
     except Exception as e:
         print(f"Error: {e}")
