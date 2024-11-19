@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import csv
 import pandas as pd
+import time
+import preferences
 
 API_KEY = "2fd4c84ae5dc94f364025a03e86b7926"  # Replace with your API key
 LOCATION = "Limerick,IE"  # Replace with desired location
@@ -46,109 +48,10 @@ def parse_weather_data(data):
         "sunset": sunset
     }
 
-
+fish_preferences = preferences.get_fish_preferences()
 def fishing_conditions(
         temperature, air_pressure, wind_speed, cloud_cover,
-        precipitation, precipitation_type, sunrise, sunset
-):
-    fish_preferences = {
-        "Pike": {
-            "temperature": (10, 20),  # °C
-            "air_pressure": (1010, 1030),  # hPa
-            "wind_speed": (0, 15),  # km/h
-            "cloud_cover": (20, 80),  # percentage
-            "precipitation": (0, 5),  # mm
-            "precipitation_type": ["None", "Rain"]
-        },
-        "Perch": {
-            "temperature": (15, 25),  # °C
-            "air_pressure": (1015, 1025),  # hPa
-            "wind_speed": (0, 10),  # km/h
-            "cloud_cover": (10, 70),  # percentage
-            "precipitation": (0, 3),  # mm
-            "precipitation_type": ["None", "Rain"]
-        },
-        "Brown Trout": {
-            "temperature": (8, 16),  # °C
-            "air_pressure": (1010, 1025),  # hPa
-            "wind_speed": (0, 12),  # km/h
-            "cloud_cover": (30, 90),  # percentage
-            "precipitation": (0, 8),  # mm
-            "precipitation_type": ["None", "Rain", "Drizzle"]
-        },
-        "Atlantic Salmon": {
-            "temperature": (5, 15),  # °C
-            "air_pressure": (1010, 1020),  # hPa
-            "wind_speed": (0, 15),  # km/h
-            "cloud_cover": (30, 100),  # percentage
-            "precipitation": (0, 10),  # mm
-            "precipitation_type": ["None", "Rain"]
-        },
-        "Roach": {
-            "temperature": (12, 22),  # °C
-            "air_pressure": (1010, 1030),  # hPa
-            "wind_speed": (0, 10),  # km/h
-            "cloud_cover": (10, 60),  # percentage
-            "precipitation": (0, 4),  # mm
-            "precipitation_type": ["None", "Rain"]
-        },
-        "Bream": {
-            "temperature": (12, 22),  # °C
-            "air_pressure": (1012, 1028),  # hPa
-            "wind_speed": (0, 12),  # km/h
-            "cloud_cover": (20, 70),  # percentage
-            "precipitation": (0, 5),  # mm
-            "precipitation_type": ["None", "Rain"]
-        },
-        "Rudd": {
-            "temperature": (15, 25),  # °C
-            "air_pressure": (1010, 1030),  # hPa
-            "wind_speed": (0, 8),  # km/h
-            "cloud_cover": (10, 50),  # percentage
-            "precipitation": (0, 2),  # mm
-            "precipitation_type": ["None", "Rain"]
-        },
-        "Tench": {
-            "temperature": (16, 24),  # °C
-            "air_pressure": (1010, 1028),  # hPa
-            "wind_speed": (0, 10),  # km/h
-            "cloud_cover": (15, 60),  # percentage
-            "precipitation": (0, 3),  # mm
-            "precipitation_type": ["None", "Rain"]
-        },
-        "Eel": {
-            "temperature": (10, 20),  # °C
-            "air_pressure": (1010, 1025),  # hPa
-            "wind_speed": (0, 12),  # km/h
-            "cloud_cover": (30, 80),  # percentage
-            "precipitation": (0, 5),  # mm
-            "precipitation_type": ["None", "Rain"]
-        },
-        "Dace": {
-            "temperature": (12, 20),  # °C
-            "air_pressure": (1010, 1025),  # hPa
-            "wind_speed": (0, 10),  # km/h
-            "cloud_cover": (10, 60),  # percentage
-            "precipitation": (0, 4),  # mm
-            "precipitation_type": ["None", "Rain"]
-        },
-        "Chub": {
-            "temperature": (10, 20),  # °C
-            "air_pressure": (1010, 1025),  # hPa
-            "wind_speed": (0, 15),  # km/h
-            "cloud_cover": (20, 80),  # percentage
-            "precipitation": (0, 6),  # mm
-            "precipitation_type": ["None", "Rain"]
-        },
-        "Gudgeon": {
-            "temperature": (10, 20),  # °C
-            "air_pressure": (1010, 1030),  # hPa
-            "wind_speed": (0, 8),  # km/h
-            "cloud_cover": (20, 70),  # percentage
-            "precipitation": (0, 2),  # mm
-            "precipitation_type": ["None", "Rain"]
-        }
-    }
+        precipitation, precipitation_type, sunrise, sunset, fish_preferences):
 
     def calculate_score(value, optimal_range, max_score=10):
         if optimal_range[0] <= value <= optimal_range[1]:
@@ -195,7 +98,7 @@ def showGraph(df):
 def selectFish():
     while True:
         fish = input("Enter the name of the fish you want to see the data for (or enter 'exit' to return back to choices): \n>>> ").lower()
-        while fish not in str(df["Fish"]).lower():
+        while fish not in [str(df["Fish"]).lower(), "exit"]:
             print(f"Error: Fish '{fish}' not found in the data.\n")
             fish = input("Please enter a valid Irish freshwater fish species:"
                          "\n(Pike, Perch, Brown Trout, Atlantic Salmon, Roach, "
@@ -227,12 +130,42 @@ def selectFish():
             print(f"Fish: Gudgeon\nScore: {df.loc[df['Fish'] == 'Gudgeon', 'Score'].item():.1f}/10")
         elif fish == "exit":
             break
+        time.sleep(5)
+
+
+def main():
+    mode = input("Would you like to view: (a) Listed Data; (b) Graphed Data; (c) Individual Data; (d) EXIT\n>>> ")
+    if mode not in ["a", "b", "c", "d", "A", "B", "C", "D"]:
+        mode = input("This is not a valid input; Please enter either 'a', 'b', or 'c':\n>>> ")
+    mode = mode.lower()
+
+    if mode == "a":
+        listConditions()
+        time.sleep(5)
+        main()
+    elif mode == "b":
+        showGraph(df)
+        main()
+    elif mode == "c":
+        selectFish()
+        main()
+    elif mode == "d":
+        print("\nExiting the program.", end="")
+        time.sleep(0.5)
+        print(".", end="")
+        time.sleep(0.5)
+        print(".", end="")
+        time.sleep(0.5)
+        print(".")
+        exit()
 
 if __name__ == "__main__":
     try:
         weather_data = get_weather_data(LOCATION)
         parsed_data = parse_weather_data(weather_data)
-        quality = fishing_conditions(**parsed_data)
+        # Get fish preferences using the imported function
+        fish_preferences = preferences.get_fish_preferences()
+        quality = fishing_conditions(**parsed_data, fish_preferences=fish_preferences)
 
         # Write the data to the CSV file (overwrites existing data)
         with open("Conditions.csv", "w", newline="") as csvfile:
@@ -248,17 +181,7 @@ if __name__ == "__main__":
             print(f"Error: File not found at '{fileName}'. Please check the path.")
             exit()
 
-        mode = input("Would you like to view: (a) Listed Data; (b) Graphed Data; (c) Individual Data\n>>> ")
-        if mode not in ["a", "b", "c", "A", "B", "C"]:
-            mode = input("This is not a valid input; Please enter either 'a', 'b', or 'c':\n>>> ")
-        mode = mode.lower()
-
-        if mode == "a":
-            listConditions()
-        elif mode == "b":
-            showGraph(df)
-        elif mode == "c":
-            selectFish()
+        main()
 
     except Exception as e:
         print(f"Error: {e}")

@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="Added Bar Graph">
+    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="added different list, graph and select mode">
+      <change afterPath="$PROJECT_DIR$/preferences.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Conditions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Conditions.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -148,7 +148,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732011037855</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="added different list, graph and select mode">
+      <option name="closed" value="true" />
+      <created>1732013449725</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1732013449726</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -168,6 +176,7 @@
     <MESSAGE value="Fixed API issue" />
     <MESSAGE value="Added csv for visualization data" />
     <MESSAGE value="Added Bar Graph" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Bar Graph" />
+    <MESSAGE value="added different list, graph and select mode" />
+    <option name="LAST_COMMIT_MESSAGE" value="added different list, graph and select mode" />
   </component>
 </project>
