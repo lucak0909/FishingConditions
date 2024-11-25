@@ -194,25 +194,11 @@ def compareLocations():
     showGraph(dfs, locations)
 
 def main():
-    mode = input("\nWould you like to do: (a) List Data; (b) Graph Data; (c) Select Data; (d) Compare Locations; (e) EXIT\n>>> ")
-    if mode not in ["a", "b", "c", "d", "A", "B", "C", "D", "e", "E"]:
-        mode = input("\nThis is not a valid input; Please enter either 'a', 'b', 'c', 'd', or 'e':\n>>> ")
-    mode = mode.lower()
+    mode = input("\nWould you like to do: 0. EXIT 1. List Data; 2. Graph Data; 3. Select Data; 4. Compare Locations; 5. Enter Data Yourself\n>>> ")
+    if mode not in ["0", "1", "2", "3", "4", "5"]:
+        mode = input("\nThis is not a valid input; Please enter either '0', '1', '2', '3', '4', or '5':\n>>> ")
 
-    if mode == "a":
-        listConditions(location, quality)
-        time.sleep(5)
-        main()
-    elif mode == "b":
-        showGraph([df], [location])  # Pass single DataFrame as a list
-        main()
-    elif mode == "c":
-        selectFish(df)
-        main()
-    elif mode == "d":
-        compareLocations()
-        main()
-    elif mode == "e":
+    if mode == "0":
         print("\nExiting the program.", end="")
         time.sleep(0.5)
         print(".", end="")
@@ -221,6 +207,27 @@ def main():
         time.sleep(0.5)
         print(".")
         exit()
+    elif mode == "1":
+        listConditions(location, quality)
+        time.sleep(5)
+        main()
+    elif mode == "2":
+        showGraph([df], [location])  # Pass single DataFrame as a list
+        main()
+    elif mode == "3":
+        selectFish(df)
+        main()
+    elif mode == "4":
+        compareLocations()
+        main()
+    elif mode == "5":
+        """Placeholder: Create a function to enter the weather data manually"""
+        # enterData()
+        print("\n'''Placeholder: Create a function to enter the weather data manually'''")
+        main()
+
+
+
 
 if __name__ == "__main__":
     while True:
