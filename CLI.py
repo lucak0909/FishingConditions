@@ -193,6 +193,62 @@ def compareLocations():
 
     showGraph(dfs, locations)
 
+def enterData():
+    """Allows the user to manually enter weather data and get fishing condition scores."""
+
+    while True:
+        try:
+            # Prompt for weather data input
+            temperature = float(input("Enter current temperature in Celsius: "))
+            air_pressure = float(input("Enter air pressure in hPa: "))
+            wind_speed = float(input("Enter wind speed in km/h: "))
+            cloud_cover = int(input("Enter cloud cover percentage (0-100): "))
+            precipitation = float(input("Enter precipitation in mm (e.g., 0 for no rain, 2.5 for light rain): "))
+            precipitation_type = input("Enter precipitation type ('Rain' or 'None'): ").capitalize()
+            sunrise_str = input("Enter sunrise time (HH:MM:SS): ")
+            sunset_str = input("Enter sunset time (HH:MM:SS): ")
+
+            # Validate cloud cover input
+            if not 0 <= cloud_cover <= 100:
+                raise ValueError("Invalid cloud cover percentage. Please enter a value between 0 and 100.")
+
+            # Validate precipitation type input
+            if precipitation_type not in ["Rain", "None"]:
+                raise ValueError("Invalid precipitation type. Please enter 'Rain' or 'None'.")
+
+            # Convert sunrise and sunset strings to datetime.time objects
+            try:
+                sunrise = datetime.strptime(sunrise_str, "%H:%M:%S").time()
+                sunset = datetime.strptime(sunset_str, "%H:%M:%S").time()
+            except ValueError:
+                raise ValueError("Invalid time format. Please use HH:MM:SS format for sunrise and sunset.")
+
+            # Create a dictionary to store the manually entered weather data
+            manual_weather_data = {
+                "temperature": temperature,
+                "air_pressure": air_pressure,
+                "wind_speed": wind_speed,
+                "cloud_cover": cloud_cover,
+                "precipitation": precipitation,
+                "precipitation_type": precipitation_type,
+                "sunrise": sunrise,
+                "sunset": sunset
+            }
+
+            # Calculate fishing conditions based on manual input
+            quality = fishing_conditions(**manual_weather_data, fish_preferences=fish_preferences)
+
+            # Display the results
+            print("\nFishing conditions based on your input:")
+            for fish, score in quality.items():
+                print(f"{fish}: {score:.1f}/10")
+
+            break  # Exit the loop if no exceptions are raised
+
+        except ValueError as e:
+            print(f"Error: {e}")
+
+
 def main():
     mode = input("\nWould you like to do: 0. EXIT 1. List Data; 2. Graph Data; 3. Select Data; 4. Compare Locations; 5. Enter Data Yourself\n>>> ")
     if mode not in ["0", "1", "2", "3", "4", "5"]:
@@ -221,12 +277,8 @@ def main():
         compareLocations()
         main()
     elif mode == "5":
-        """Placeholder: Create a function to enter the weather data manually"""
-        # enterData()
-        print("\n'''Placeholder: Create a function to enter the weather data manually'''")
+        enterData()
         main()
-
-
 
 
 if __name__ == "__main__":

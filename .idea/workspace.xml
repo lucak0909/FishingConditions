@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="Preparing for GUI as well as CLI implementation">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_18_11_2024_09_25_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_18_11_2024_09_25__Changes_.xml" beforeDir="false" />
+    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="Preparing for a function to add data manually">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CLI.py" beforeDir="false" afterPath="$PROJECT_DIR$/CLI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Conditions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Conditions.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -247,7 +246,39 @@
       <option name="project" value="LOCAL" />
       <updated>1732030370657</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Preparing for an function to add data manually">
+      <option name="closed" value="true" />
+      <created>1732540122739</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1732540122739</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Preparing for a function to add data manually">
+      <option name="closed" value="true" />
+      <created>1732540138116</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1732540138116</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Preparing for a function to add data manually">
+      <option name="closed" value="true" />
+      <created>1732540144896</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1732540144896</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Preparing for a function to add data manually">
+      <option name="closed" value="true" />
+      <created>1732540152868</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1732540152868</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -276,6 +307,8 @@
     <MESSAGE value="Fixed Colours in graph" />
     <MESSAGE value="added README.md" />
     <MESSAGE value="Preparing for GUI as well as CLI implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Preparing for GUI as well as CLI implementation" />
+    <MESSAGE value="Preparing for an function to add data manually" />
+    <MESSAGE value="Preparing for a function to add data manually" />
+    <option name="LAST_COMMIT_MESSAGE" value="Preparing for a function to add data manually" />
   </component>
 </project>
