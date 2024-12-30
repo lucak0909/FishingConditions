@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="Preparing for a function to add data manually">
+    <list default="true" id="044df24c-f6d5-4562-866d-75d471ec5659" name="Changes" comment="Created function to add data manually">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CLI.py" beforeDir="false" afterPath="$PROJECT_DIR$/CLI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Conditions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Conditions.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/GUI.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +24,6 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="MIXED" />
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -278,7 +277,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732540152868</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Created function to add data manually">
+      <option name="closed" value="true" />
+      <created>1732619189029</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1732619189029</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -309,6 +316,7 @@
     <MESSAGE value="Preparing for GUI as well as CLI implementation" />
     <MESSAGE value="Preparing for an function to add data manually" />
     <MESSAGE value="Preparing for a function to add data manually" />
-    <option name="LAST_COMMIT_MESSAGE" value="Preparing for a function to add data manually" />
+    <MESSAGE value="Created function to add data manually" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created function to add data manually" />
   </component>
 </project>
