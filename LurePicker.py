@@ -4,15 +4,16 @@ import requests
 # Function to fetch weather data from OpenWeatherMap API
 def get_weather_data(api_key, city):
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
-    response = requests.get(url)
-    if response.status_code == 200:
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raises an error for non-200 status codes
         data = response.json()
         weather = data['weather'][0]['description']
         temp = data['main']['temp']
         wind_speed = data['wind']['speed']
         return weather, temp, wind_speed
-    else:
-        print("Error fetching weather data.")
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching weather data: {e}")
         return None, None, None
 
 
@@ -27,26 +28,36 @@ def get_lure_recommendation(api_key, city):
     print(f"Weather in {city}: {weather}, Temperature: {temp}°C, Wind Speed: {wind_speed} m/s\n")
 
     # Get user input for water conditions
-    water_conditions = [
-        "Clear Water",
-        "Murky Water"
-    ]
-    print("Please select the water conditions:")
-    for idx, condition in enumerate(water_conditions, 1):
-        print(f"{idx}. {condition}")
-    water_condition_choice = int(input("Enter the number corresponding to the water conditions: ")) - 1
-    water_condition = water_conditions[water_condition_choice]
+    water_conditions = ["Clear Water", "Murky Water"]
+    while True:
+        print("Please select the water conditions:")
+        for idx, condition in enumerate(water_conditions, 1):
+            print(f"{idx}. {condition}")
+        try:
+            water_condition_choice = int(input("Enter the number corresponding to the water conditions: "))
+            if 1 <= water_condition_choice <= len(water_conditions):
+                water_condition = water_conditions[water_condition_choice - 1]
+                break
+            else:
+                print("Invalid choice. Please enter a number within the range.")
+        except ValueError:
+            print("Invalid input. Please enter a valid number.")
 
     # Get user input for water depth
-    water_depths = [
-        "Shallow (<2m)",
-        "Deep (>3m)"
-    ]
-    print("\nPlease select the water depth:")
-    for idx, depth in enumerate(water_depths, 1):
-        print(f"{idx}. {depth}")
-    water_depth_choice = int(input("Enter the number corresponding to the water depth: ")) - 1
-    water_depth = water_depths[water_depth_choice]
+    water_depths = ["Shallow (<2m)", "Deep (>3m)"]
+    while True:
+        print("\nPlease select the water depth:")
+        for idx, depth in enumerate(water_depths, 1):
+            print(f"{idx}. {depth}")
+        try:
+            water_depth_choice = int(input("Enter the number corresponding to the water depth: "))
+            if 1 <= water_depth_choice <= len(water_depths):
+                water_depth = water_depths[water_depth_choice - 1]
+                break
+            else:
+                print("Invalid choice. Please enter a number within the range.")
+        except ValueError:
+            print("Invalid input. Please enter a valid number.")
 
     # Combine weather, water conditions, and depth to determine the appropriate lure
     if 'clear' in weather.lower():
