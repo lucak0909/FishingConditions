@@ -249,7 +249,7 @@ def enterData():
             print(f"Error: {e}")
 
 
-def main():
+def displayData():
     mode = input("\nWould you like to do: 0. EXIT 1. List Data; 2. Graph Data; 3. Select Data; 4. Compare Locations; 5. Enter Data Yourself\n>>> ")
     if mode not in ["0", "1", "2", "3", "4", "5"]:
         mode = input("\nThis is not a valid input; Please enter either '0', '1', '2', '3', '4', or '5':\n>>> ")
@@ -266,19 +266,19 @@ def main():
     elif mode == "1":
         listConditions(location, quality)
         time.sleep(5)
-        main()
+        displayData()
     elif mode == "2":
         showGraph([df], [location])  # Pass single DataFrame as a list
-        main()
+        displayData()
     elif mode == "3":
         selectFish(df)
-        main()
+        displayData()
     elif mode == "4":
         compareLocations()
-        main()
+        displayData()
     elif mode == "5":
         enterData()
-        main()
+        displayData()
 
 
 if __name__ == "__main__":
@@ -307,7 +307,7 @@ if __name__ == "__main__":
                 print(f"\nError: File not found at '{fileName}'. Please check the path.")
                 exit()
 
-            main()
+            displayData()
             break  # Break the loop if no exception is raised
 
         except ValueError as e:

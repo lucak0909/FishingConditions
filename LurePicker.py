@@ -1,6 +1,7 @@
 import requests
 
 
+# Function to fetch weather data from OpenWeatherMap API
 def get_weather_data(api_key, city):
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
     response = requests.get(url)
@@ -41,7 +42,7 @@ def get_lure_recommendation(api_key, city):
         "Shallow (<2m)",
         "Deep (>3m)"
     ]
-    print("Please select the water depth:")
+    print("\nPlease select the water depth:")
     for idx, depth in enumerate(water_depths, 1):
         print(f"{idx}. {depth}")
     water_depth_choice = int(input("Enter the number corresponding to the water depth: ")) - 1
@@ -85,7 +86,8 @@ def get_lure_recommendation(api_key, city):
     print(f"\nRecommended lures for {weather} weather, {water_condition} with {water_depth}: {recommended_lures}")
 
 
-def pickLure():
+# Example usage
+if __name__ == "__main__":
     # Enter your OpenWeatherMap API key here
     api_key = "2fd4c84ae5dc94f364025a03e86b7926"
     city = input("Enter the city to get the weather data: ")
