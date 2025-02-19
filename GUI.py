@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import preferences
 
-API_KEY = "2fd4c84ae5dc94f364025a03e86b7926"  # Replace with your API key
+API_KEY = "API_KEY"  # Replace with your API key
 
 
 def get_weather_data(location):
