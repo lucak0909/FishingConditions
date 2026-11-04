@@ -1,31 +1,66 @@
 # Fishing Conditions App
 
-This is a simple Python application that provides fishing condition scores for various fish species based on weather data for a given location in Ireland.
+A Python app that scores fishing conditions for freshwater fish species in Ireland based on
+live weather data, and recommends lures using a tag-based matching system.
 
 ## Features
 
-* Fetches weather data for a specified location in Ireland.
-* Calculates fishing condition scores for different fish species based on:
-    * Wind speed
-    * Wind direction
-    * Wave height
-    * Air temperature
-    * Precipitation
-    * Time of day
-* Displays the scores in a user-friendly GUI with a table and a bar graph.
-* Automatically updates the data every minute.
+* Fetches live weather data for a specified location in Ireland (OpenWeatherMap).
+* Scores fishing conditions for 12 fish species based on temperature, air pressure, wind
+  speed, cloud cover, precipitation and time of day.
+* Lure Helper recommends lures by scoring them against the current weather, target species,
+  water clarity and depth -- see "Lure tagging system" below.
+* CLI with listing, graphing, per-fish lookup, multi-location comparison, and manual data entry.
+* GUI (Tkinter) with a Fishing Conditions tab and a Lure Helper tab.
 
 ## Requirements
 
-* Python 3.6 or higher
+* Python 3.9+
 * Tkinter (usually included with Python)
-* Requests library
-* Matplotlib library
-* Pandas library
+* See `requirements.txt` for Python packages
 
-## Installation
+## Setup
 
-1. Clone the repository or download the source code.
-2. Install the required libraries:
+1. Clone the repository and install dependencies:
    ```bash
-   pip install requests matplotlib pandas
+   pip install -r requirements.txt
+   ```
+2. Get a free API key from [OpenWeatherMap](https://openweathermap.org/api).
+3. Copy `.env.example` to `.env` and fill in your key:
+   ```bash
+   cp .env.example .env
+   ```
+   Alternatively, set the `OPENWEATHER_API_KEY` environment variable directly.
+
+   **Never commit your real API key.** `.env` is already gitignored.
+
+## Running it
+
+```bash
+python main.py
+```
+
+This lets you choose between the CLI and the GUI. Each entry point can also be run directly:
+`python CLI.py`, `python GUI.py`, or `python LurePicker.py` for the standalone lure recommender.
+
+## Lure tagging system
+
+Lures live in `lures.py` as plain tagged dicts instead of a hardcoded decision tree:
+
+```python
+{
+    "name": "Pike Chatterbait",
+    "species": ["Pike"],
+    "water_clarity": ["murky"],
+    "depth": ["deep"],
+    "weather": ["clear", "overcast", "windy"],
+    "style": "chatterbait",
+}
+```
+
+`lures.recommend_lures(species, water_clarity, depth, weather_tags)` scores every lure by how
+many of the requested tags it matches and returns the top candidates. Weather is turned into
+tags (`clear`, `overcast`, `windy`, `rain`) by `weather.classify_weather_tags`.
+
+To add a lure, just append a new dict to `lures.LURES` -- no branching logic to update, and it
+immediately becomes available to the CLI, GUI and standalone picker alike.

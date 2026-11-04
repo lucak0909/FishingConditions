@@ -1,57 +1,22 @@
-import requests
 from datetime import datetime
-import matplotlib.pyplot as plt
 import csv
-import pandas as pd
 import time
+
+import matplotlib.pyplot as plt
+import pandas as pd
+
+import lures
 import preferences
+import weather
 
-API_KEY = "API_KEY"  # Replace with your API key
 fileName = "Conditions.csv"
-
-def get_weather_data(location):
-    """Fetch current weather data from OpenWeatherMap."""
-    url = f"http://api.openweathermap.org/data/2.5/weather"
-    params = {
-        "q": location,
-        "appid": API_KEY,
-        "units": "metric"  # For temperature in Celsius
-    }
-    response = requests.get(url, params=params)
-    if response.status_code == 200:
-        return response.json()
-    elif response.status_code == 404:  # City not found
-        raise ValueError("City not found. Please check your spelling.")
-    else:
-        raise Exception(f"\nFailed to fetch weather data: {response.status_code}, {response.text}")
-
-def parse_weather_data(data):
-    """Extract relevant weather data."""
-    temperature = data["main"]["temp"]
-    air_pressure = data["main"]["pressure"]
-    wind_speed = data["wind"]["speed"] * 3.6  # Convert from m/s to km/h
-    cloud_cover = data["clouds"]["all"]
-    precipitation = data.get("rain", {}).get("1h", 0)  # mm
-    precipitation_type = "Rain" if "rain" in data else "None"
-    sunrise = datetime.fromtimestamp(data["sys"]["sunrise"]).time()
-    sunset = datetime.fromtimestamp(data["sys"]["sunset"]).time()
-
-    return {
-        "temperature": temperature,
-        "air_pressure": air_pressure,
-        "wind_speed": wind_speed,
-        "cloud_cover": cloud_cover,
-        "precipitation": precipitation,
-        "precipitation_type": precipitation_type,
-        "sunrise": sunrise,
-        "sunset": sunset
-    }
 
 fish_preferences = preferences.get_fish_preferences()
 
+
 def fishing_conditions(
         temperature, air_pressure, wind_speed, cloud_cover,
-        precipitation, precipitation_type, sunrise, sunset, fish_preferences):
+        precipitation, precipitation_type, sunrise, sunset, fish_preferences, description=None):
 
     def calculate_score(value, optimal_range, max_score=10):
         if optimal_range[0] <= value <= optimal_range[1]:
@@ -79,10 +44,12 @@ def fishing_conditions(
 
     return results
 
+
 def listConditions(location, quality):
     print(f"\nFishing conditions for {location} on {datetime.now().strftime('%d/%m/%Y')}:")
     for fish, score in quality.items():
         print(f"{fish}: {score:.1f}/10")
+
 
 def showGraph(dfs, locations):
     """Creating the bar graph visualization of the dataset"""
@@ -115,46 +82,69 @@ def showGraph(dfs, locations):
     plt.tight_layout()
     plt.show()
 
+
 def selectFish(df):
+    valid_fish = df["Fish"].str.lower().tolist()
     while True:
         fish = input("\nEnter the name of the fish you want to see the data for (or enter 'exit' to return back to choices): \n>>> ").lower()
-        while fish.lower() not in df["Fish"].str.lower().tolist() + ["exit"]:
+        while fish not in valid_fish + ["exit"]:
             print(f"\nError: Fish '{fish}' not found in the data.\n")
-            fish = input("Please enter a valid Irish freshwater fish species:"
-                         "\n(Pike, Perch, Brown Trout, Atlantic Salmon, Roach, "
-                         "Bream, Rudd, Tench, Eel, Dace, Chub, Gudgeon)\n>>> ").lower()
+            fish = input(f"Please enter a valid fish species ({', '.join(df['Fish'])}):\n>>> ").lower()
 
-        if fish == "pike":
-            print(f"\nFish: Pike\nScore: {df.loc[df['Fish'] == 'Pike', 'Score'].item():.1f}/10")
-        elif fish == "perch":
-            print(f"\nFish: Perch\nScore: {df.loc[df['Fish'] == 'Perch', 'Score'].item():.1f}/10")
-        elif fish == "brown trout":
-            print(f"\nFish: Brown Trout\nScore: {df.loc[df['Fish'] == 'Brown Trout', 'Score'].item():.1f}/10")
-        elif fish == "atlantic salmon":
-            print(f"\nFish: Atlantic Salmon\nScore: {df.loc[df['Fish'] == 'Atlantic Salmon', 'Score'].item():.1f}/10")
-        elif fish == "roach":
-            print(f"\nFish: Roach\nScore: {df.loc[df['Fish'] == 'Roach', 'Score'].item():.1f}/10")
-        elif fish == "bream":
-            print(f"\nFish: Bream\nScore: {df.loc[df['Fish'] == 'Bream', 'Score'].item():.1f}/10")
-        elif fish == "rudd":
-            print(f"\nFish: Rudd\nScore: {df.loc[df['Fish'] == 'Rudd', 'Score'].item():.1f}/10")
-        elif fish == "tench":
-            print(f"\nFish: Tench\nScore: {df.loc[df['Fish'] == 'Tench', 'Score'].item():.1f}/10")
-        elif fish == "eel":
-            print(f"\nFish: Eel\nScore: {df.loc[df['Fish'] == 'Eel', 'Score'].item():.1f}/10")
-        elif fish == "dace":
-            print(f"\nFish: Dace\nScore: {df.loc[df['Fish'] == 'Dace', 'Score'].item():.1f}/10")
-        elif fish == "chub":
-            print(f"\nFish: Chub\nScore: {df.loc[df['Fish'] == 'Chub', 'Score'].item():.1f}/10")
-        elif fish == "gudgeon":
-            print(f"\nFish: Gudgeon\nScore: {df.loc[df['Fish'] == 'Gudgeon', 'Score'].item():.1f}/10")
-        elif fish == "exit":
+        if fish == "exit":
             break
-        time.sleep(5)
+
+        match = df.loc[df["Fish"].str.lower() == fish, ["Fish", "Score"]].iloc[0]
+        print(f"\nFish: {match['Fish']}\nScore: {float(match['Score']):.1f}/10")
+
+
+def lureHelper(description=None, wind_speed_kmh=None):
+    """Tag-based lure recommendation. Reuses the current weather fetch if available,
+    otherwise asks for enough info to classify the weather manually."""
+
+    if description is None:
+        description = input("\nBriefly describe the weather (e.g. 'clear', 'overcast', 'rain'): \n>>> ")
+    if wind_speed_kmh is None:
+        while True:
+            try:
+                wind_speed_kmh = float(input("Wind speed in km/h: \n>>> "))
+                break
+            except ValueError:
+                print("Please enter a number.")
+
+    weather_tags = weather.classify_weather_tags(description, wind_speed_kmh)
+
+    species_options = lures.ALL_SPECIES
+    print("\nTarget species:")
+    for idx, species in enumerate(species_options, 1):
+        print(f"{idx}. {species}")
+    species_choice = input(f"Enter a number (1-{len(species_options)}): \n>>> ")
+    while species_choice not in [str(i) for i in range(1, len(species_options) + 1)]:
+        species_choice = input("Invalid choice. Try again: \n>>> ")
+    species = species_options[int(species_choice) - 1]
+
+    water_clarity = input("\nWater clarity - clear or murky? \n>>> ").strip().lower()
+    while water_clarity not in ["clear", "murky"]:
+        water_clarity = input("Please enter 'clear' or 'murky': \n>>> ").strip().lower()
+
+    depth = input("\nWater depth - shallow or deep? \n>>> ").strip().lower()
+    while depth not in ["shallow", "deep"]:
+        depth = input("Please enter 'shallow' or 'deep': \n>>> ").strip().lower()
+
+    recommendations = lures.recommend_lures(species, water_clarity, depth, weather_tags)
+
+    if not recommendations:
+        print("\nNo strong matches found for those conditions -- try a different combination.")
+        return
+
+    print(f"\nTop lure picks for {species} in {water_clarity} water ({depth}), weather tags: {', '.join(sorted(weather_tags))}:")
+    for lure in recommendations:
+        print(f"- {lure['name']} ({lure['style']})")
+
 
 def compareLocations():
     num_locations = input("\nEnter how many locations do you want to compare:\n>>> ")
-    while num_locations not in ["2","3","4","5","6","7","8","9","10"]:
+    while num_locations not in [str(i) for i in range(2, 11)]:
         num_locations = input("\nInvalid input. Please enter a positive integer greater between 2 and 10:\n>>> ")
     num_locations = int(num_locations)
     locations = []
@@ -168,8 +158,8 @@ def compareLocations():
                     location = input("\nInvalid input. Please enter your desired fishing location\n>>> ").lower()
                 location = location[0].upper() + location[1:].lower() + ",IE"
 
-                weather_data = get_weather_data(location)
-                parsed_data = parse_weather_data(weather_data)
+                weather_data = weather.get_weather_data(location)
+                parsed_data = weather.parse_weather_data(weather_data)
                 quality = fishing_conditions(**parsed_data, fish_preferences=fish_preferences)
 
                 with open("Conditions.csv", "w", newline="") as csvfile:
@@ -185,13 +175,11 @@ def compareLocations():
 
             except ValueError as e:
                 print(f"\nError: {e}")
-            except FileNotFoundError:
-                print(f"\nError: File not found at 'Conditions.csv'. Please check the path.")
-                exit()
             except Exception as e:
                 print(f"Error: {e}")
 
     showGraph(dfs, locations)
+
 
 def enterData():
     """Allows the user to manually enter weather data and get fishing condition scores."""
@@ -249,10 +237,13 @@ def enterData():
             print(f"Error: {e}")
 
 
-def displayData():
-    mode = input("\nWould you like to do: 0. EXIT 1. List Data; 2. Graph Data; 3. Select Data; 4. Compare Locations; 5. Enter Data Yourself\n>>> ")
-    if mode not in ["0", "1", "2", "3", "4", "5"]:
-        mode = input("\nThis is not a valid input; Please enter either '0', '1', '2', '3', '4', or '5':\n>>> ")
+def displayData(location, df, description=None, wind_speed_kmh=None):
+    mode = input(
+        "\nWould you like to do: 0. EXIT 1. List Data; 2. Graph Data; 3. Select Data; "
+        "4. Compare Locations; 5. Enter Data Yourself; 6. Lure Helper\n>>> "
+    )
+    while mode not in [str(i) for i in range(7)]:
+        mode = input("\nThis is not a valid input; Please enter a number from 0-6:\n>>> ")
 
     if mode == "0":
         print("\nExiting the program.", end="")
@@ -262,26 +253,25 @@ def displayData():
         print(".", end="")
         time.sleep(0.5)
         print(".")
-        exit()
+        return
     elif mode == "1":
+        quality = dict(zip(df["Fish"], df["Score"]))
         listConditions(location, quality)
-        time.sleep(5)
-        displayData()
     elif mode == "2":
         showGraph([df], [location])  # Pass single DataFrame as a list
-        displayData()
     elif mode == "3":
         selectFish(df)
-        displayData()
     elif mode == "4":
         compareLocations()
-        displayData()
     elif mode == "5":
         enterData()
-        displayData()
+    elif mode == "6":
+        lureHelper(description, wind_speed_kmh)
+
+    displayData(location, df, description, wind_speed_kmh)
 
 
-if __name__ == "__main__":
+def run_cli():
     while True:
         try:
             location = input("\nEnter your desired fishing location\n>>> ").lower()
@@ -289,26 +279,27 @@ if __name__ == "__main__":
                 location = input("\nInvalid input. Please enter your desired fishing location\n>>> ").lower()
             location = location[0].upper() + location[1:].lower() + ",IE"
 
-            weather_data = get_weather_data(location)
-            parsed_data = parse_weather_data(weather_data)
-            fish_preferences = preferences.get_fish_preferences()
+            weather_data = weather.get_weather_data(location)
+            parsed_data = weather.parse_weather_data(weather_data)
             quality = fishing_conditions(**parsed_data, fish_preferences=fish_preferences)
 
-            with open("Conditions.csv", "w", newline="") as csvfile:
+            with open(fileName, "w", newline="") as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerow(["Fish", "Score"])  # Write header row
                 for fish, score in quality.items():
-                    now = datetime.now()
                     writer.writerow([fish, f"{score:.1f}"])
 
-            try:
-                df = pd.read_csv(fileName)  # Read the CSV into a pandas DataFrame
-            except FileNotFoundError:
-                print(f"\nError: File not found at '{fileName}'. Please check the path.")
-                exit()
+            df = pd.read_csv(fileName)  # Read the CSV into a pandas DataFrame
 
-            displayData()
+            displayData(location, df, parsed_data["description"], parsed_data["wind_speed"])
             break  # Break the loop if no exception is raised
 
         except ValueError as e:
             print(f"\nError: {e}")
+        except RuntimeError as e:
+            print(f"\nError: {e}")
+            break
+
+
+if __name__ == "__main__":
+    run_cli()
