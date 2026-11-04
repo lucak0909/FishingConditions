@@ -4,8 +4,7 @@ See lures.py for the tag database/scoring logic and weather.py for the
 weather fetch + classification shared with the rest of the app.
 """
 
-import lures
-import weather
+from . import lures, weather
 
 
 def run_lure_picker():

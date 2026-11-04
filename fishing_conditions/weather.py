@@ -8,8 +8,10 @@ BASE_URL = "http://api.openweathermap.org/data/2.5/weather"
 
 
 def _load_dotenv():
-    """Pull KEY=VALUE pairs from a local .env file into the environment, if present."""
-    env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+    """Pull KEY=VALUE pairs from the repo-root .env file into the environment, if present."""
+    package_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.dirname(package_dir)
+    env_path = os.path.join(repo_root, ".env")
     if not os.path.exists(env_path):
         return
     with open(env_path) as f:
