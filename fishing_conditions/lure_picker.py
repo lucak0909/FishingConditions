@@ -1,10 +1,20 @@
-"""Standalone entry point for the tag-based lure recommender.
+"""Standalone entry point for the lure suitability advisor.
 
-See lures.py for the tag database/scoring logic and weather.py for the
-weather fetch + classification shared with the rest of the app.
+See lures.py for the scoring logic and weather.py for the weather fetch +
+classification shared with the rest of the app.
 """
 
 from . import lures, weather
+
+
+def _choose(options, label):
+    print(f"\n{label}:")
+    for idx, option in enumerate(options, 1):
+        print(f"{idx}. {option}")
+    choice = input(f"Enter a number (1-{len(options)}): ")
+    while choice not in [str(i) for i in range(1, len(options) + 1)]:
+        choice = input("Invalid choice. Try again: ")
+    return options[int(choice) - 1]
 
 
 def run_lure_picker():
@@ -22,47 +32,29 @@ def run_lure_picker():
     parsed = weather.parse_weather_data(weather_data)
     print(
         f"Weather in {location}: {parsed['description']}, "
-        f"Temperature: {parsed['temperature']}°C, Wind Speed: {parsed['wind_speed']:.1f} km/h\n"
+        f"Temperature: {parsed['temperature']}°C, Wind Speed: {parsed['wind_speed']:.1f} km/h"
     )
 
     weather_tags = weather.classify_weather_tags(parsed["description"], parsed["wind_speed"])
 
-    species_options = lures.ALL_SPECIES
-    print("Target species:")
-    for idx, species in enumerate(species_options, 1):
-        print(f"{idx}. {species}")
-    species_choice = input(f"Enter a number (1-{len(species_options)}): ")
-    while species_choice not in [str(i) for i in range(1, len(species_options) + 1)]:
-        species_choice = input("Invalid choice. Try again: ")
-    species = species_options[int(species_choice) - 1]
+    water_clarity = _choose(["clear", "murky"], "Water clarity")
+    target_depth = _choose(["shallow", "deep"], "Target fishing depth")
 
-    water_conditions = ["Clear Water", "Murky Water"]
-    print("\nPlease select the water conditions:")
-    for idx, condition in enumerate(water_conditions, 1):
-        print(f"{idx}. {condition}")
-    water_choice = input("Enter the number corresponding to the water conditions: ")
-    while water_choice not in ["1", "2"]:
-        water_choice = input("Invalid choice. Please enter 1 or 2: ")
-    water_clarity = "clear" if water_choice == "1" else "murky"
+    print("\nNow describe the lure you're considering:")
+    colour = _choose(lures.COLOURS, "Colour")
+    finish = _choose(lures.FINISHES, "Finish")
+    action = _choose(lures.ACTIONS, "Action")
+    depth = _choose(lures.DEPTHS, "Running depth")
 
-    water_depths = ["Shallow (<2m)", "Deep (>3m)"]
-    print("\nPlease select the water depth:")
-    for idx, d in enumerate(water_depths, 1):
-        print(f"{idx}. {d}")
-    depth_choice = input("Enter the number corresponding to the water depth: ")
-    while depth_choice not in ["1", "2"]:
-        depth_choice = input("Invalid choice. Please enter 1 or 2: ")
-    depth = "shallow" if depth_choice == "1" else "deep"
+    score, feedback = lures.assess_lure(colour, finish, action, depth, water_clarity, target_depth, weather_tags)
 
-    recommendations = lures.recommend_lures(species, water_clarity, depth, weather_tags)
-
-    if not recommendations:
-        print("\nNo strong matches found for those conditions -- try a different combination.")
-        return
-
-    print(f"\nRecommended lures for {species}, {water_conditions[int(water_choice) - 1]}, {water_depths[int(depth_choice) - 1]}:")
-    for lure in recommendations:
-        print(f"- {lure['name']} ({lure['style']})")
+    print(f"\nSuitability score for these conditions ({', '.join(sorted(weather_tags))} weather): {score:.1f}/10")
+    if feedback:
+        print("Suggestions:")
+        for tip in feedback:
+            print(f"- {tip}")
+    else:
+        print("Good choice for these conditions!")
 
 
 if __name__ == "__main__":

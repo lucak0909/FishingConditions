@@ -1,15 +1,15 @@
 # Fishing Conditions App
 
 A Python app that scores fishing conditions for freshwater fish species in Ireland based on
-live weather data, and recommends lures using a tag-based matching system.
+live weather data, and tells you how well a lure you describe suits those conditions.
 
 ## Features
 
 * Fetches live weather data for a specified location in Ireland (OpenWeatherMap).
 * Scores fishing conditions for 12 fish species based on temperature, air pressure, wind
   speed, cloud cover, precipitation and time of day.
-* Lure Helper recommends lures by scoring them against the current weather, target species,
-  water clarity and depth -- see "Lure tagging system" below.
+* Lure Helper scores a lure you describe (colour, finish, action, running depth) against the
+  current weather, water clarity and target depth -- see "Lure suitability advisor" below.
 * CLI with listing, graphing, per-fish lookup, multi-location comparison, and manual data entry.
 * GUI (Tkinter) with a Fishing Conditions tab and a Lure Helper tab.
 
@@ -42,7 +42,7 @@ python main.py
 
 This lets you choose between the CLI and the GUI. Each entry point can also be run directly as
 a module: `python -m fishing_conditions.cli`, `python -m fishing_conditions.gui`, or
-`python -m fishing_conditions.lure_picker` for the standalone lure recommender.
+`python -m fishing_conditions.lure_picker` for the standalone lure advisor.
 
 ## Project layout
 
@@ -51,30 +51,27 @@ main.py                       # entry point -- pick CLI or GUI
 fishing_conditions/
     cli.py                    # command-line interface
     gui.py                    # Tkinter interface
-    lure_picker.py            # standalone lure recommender
+    lure_picker.py            # standalone lure advisor
     weather.py                # OpenWeatherMap fetch/parse, shared by cli/gui/lure_picker
-    lures.py                  # tagged lure database + recommender
+    lures.py                  # lure suitability scoring
     preferences.py            # per-species fishing condition ranges
 ```
 
-## Lure tagging system
+## Lure suitability advisor
 
-Lures live in `lures.py` as plain tagged dicts instead of a hardcoded decision tree:
+Rather than picking from a fixed list of named products (which inevitably goes out of date),
+you describe the lure you're considering -- colour, finish, action and running depth -- and
+`lures.assess_lure(...)` scores (0-10) how well those attributes suit the current water
+clarity, target depth and weather, with plain-English suggestions for anything that scores low:
 
 ```python
-{
-    "name": "Pike Chatterbait",
-    "species": ["Pike"],
-    "water_clarity": ["murky"],
-    "depth": ["deep"],
-    "weather": ["clear", "overcast", "windy"],
-    "style": "chatterbait",
-}
+score, feedback = lures.assess_lure(
+    colour="bright", finish="matte", action="vibrating", depth="deep",
+    water_clarity="murky", target_depth="deep", weather_tags={"windy"},
+)
+# score == 9.25, feedback == []
 ```
 
-`lures.recommend_lures(species, water_clarity, depth, weather_tags)` scores every lure by how
-many of the requested tags it matches and returns the top candidates. Weather is turned into
-tags (`clear`, `overcast`, `windy`, `rain`) by `weather.classify_weather_tags`.
-
-To add a lure, just append a new dict to `lures.LURES` -- no branching logic to update, and it
-immediately becomes available to the CLI, GUI and standalone picker alike.
+The scoring rules (bright/noisy in murky water, natural/subtle in clear water, flash on sunny
+days, matching the lure's running depth to the target depth, etc.) live in the small `_score_*`
+helper functions in `lures.py` -- tune the lookup tables there to adjust the advice.

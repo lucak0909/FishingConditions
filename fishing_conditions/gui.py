@@ -78,34 +78,41 @@ class FishingApp:
         tk.Label(
             tab,
             text="Uses the weather from the last fetch on the Fishing Conditions tab\n"
-                 "(or falls back to manual entry below).",
+                 "(or falls back to manual entry below). Describe the lure you're\n"
+                 "considering and get a suitability score for the current conditions.",
             justify="left",
         ).pack(pady=10)
 
         form = tk.Frame(tab)
         form.pack(pady=5)
 
-        tk.Label(form, text="Target species:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
-        self.species_var = tk.StringVar(value=lures.ALL_SPECIES[0])
-        ttk.Combobox(form, textvariable=self.species_var, values=lures.ALL_SPECIES, state="readonly").grid(
-            row=0, column=1, padx=5, pady=5
-        )
+        def add_row(row, label_text, var, values):
+            tk.Label(form, text=label_text).grid(row=row, column=0, sticky="w", padx=5, pady=5)
+            ttk.Combobox(form, textvariable=var, values=values, state="readonly").grid(
+                row=row, column=1, padx=5, pady=5
+            )
 
-        tk.Label(form, text="Water clarity:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         self.clarity_var = tk.StringVar(value="clear")
-        ttk.Combobox(form, textvariable=self.clarity_var, values=["clear", "murky"], state="readonly").grid(
-            row=1, column=1, padx=5, pady=5
-        )
+        add_row(0, "Water clarity:", self.clarity_var, ["clear", "murky"])
 
-        tk.Label(form, text="Water depth:").grid(row=2, column=0, sticky="w", padx=5, pady=5)
-        self.depth_var = tk.StringVar(value="shallow")
-        ttk.Combobox(form, textvariable=self.depth_var, values=["shallow", "deep"], state="readonly").grid(
-            row=2, column=1, padx=5, pady=5
-        )
+        self.target_depth_var = tk.StringVar(value="shallow")
+        add_row(1, "Target fishing depth:", self.target_depth_var, ["shallow", "deep"])
 
-        tk.Button(tab, text="Get Lure Recommendation", command=self.recommend_lures).pack(pady=10)
+        self.colour_var = tk.StringVar(value=lures.COLOURS[0])
+        add_row(2, "Lure colour:", self.colour_var, lures.COLOURS)
 
-        self.lure_text = tk.Text(tab, height=10, width=60)
+        self.finish_var = tk.StringVar(value=lures.FINISHES[0])
+        add_row(3, "Lure finish:", self.finish_var, lures.FINISHES)
+
+        self.action_var = tk.StringVar(value=lures.ACTIONS[0])
+        add_row(4, "Lure action:", self.action_var, lures.ACTIONS)
+
+        self.lure_depth_var = tk.StringVar(value=lures.DEPTHS[0])
+        add_row(5, "Lure running depth:", self.lure_depth_var, lures.DEPTHS)
+
+        tk.Button(tab, text="Assess Lure", command=self.assess_lure).pack(pady=10)
+
+        self.lure_text = tk.Text(tab, height=8, width=60)
         self.lure_text.pack(pady=10)
 
     def fetch_weather_data(self):
@@ -160,7 +167,7 @@ class FishingApp:
         except (ValueError, RuntimeError) as e:
             messagebox.showerror("Error", str(e))
 
-    def recommend_lures(self):
+    def assess_lure(self):
         if self.last_weather is not None:
             description = self.last_weather["description"]
             wind_speed_kmh = self.last_weather["wind_speed"]
@@ -169,21 +176,27 @@ class FishingApp:
             wind_speed_kmh = 0
 
         weather_tags = weather.classify_weather_tags(description, wind_speed_kmh)
-        recommendations = lures.recommend_lures(
-            self.species_var.get(), self.clarity_var.get(), self.depth_var.get(), weather_tags
+        score, feedback = lures.assess_lure(
+            self.colour_var.get(),
+            self.finish_var.get(),
+            self.action_var.get(),
+            self.lure_depth_var.get(),
+            self.clarity_var.get(),
+            self.target_depth_var.get(),
+            weather_tags,
         )
 
         self.lure_text.delete(1.0, tk.END)
-        if not recommendations:
-            self.lure_text.insert(tk.END, "No strong matches found for those conditions.")
-            return
-
         self.lure_text.insert(
             tk.END,
-            f"Top picks ({', '.join(sorted(weather_tags))} weather):\n\n",
+            f"Suitability score ({', '.join(sorted(weather_tags))} weather): {score:.1f}/10\n\n",
         )
-        for lure in recommendations:
-            self.lure_text.insert(tk.END, f"- {lure['name']} ({lure['style']})\n")
+        if feedback:
+            self.lure_text.insert(tk.END, "Suggestions:\n")
+            for tip in feedback:
+                self.lure_text.insert(tk.END, f"- {tip}\n")
+        else:
+            self.lure_text.insert(tk.END, "Good choice for these conditions!")
 
 
 def run_gui():
