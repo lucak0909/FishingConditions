@@ -40,8 +40,22 @@ live weather data, and recommends lures using a tag-based matching system.
 python main.py
 ```
 
-This lets you choose between the CLI and the GUI. Each entry point can also be run directly:
-`python CLI.py`, `python GUI.py`, or `python LurePicker.py` for the standalone lure recommender.
+This lets you choose between the CLI and the GUI. Each entry point can also be run directly as
+a module: `python -m fishing_conditions.cli`, `python -m fishing_conditions.gui`, or
+`python -m fishing_conditions.lure_picker` for the standalone lure recommender.
+
+## Project layout
+
+```
+main.py                       # entry point -- pick CLI or GUI
+fishing_conditions/
+    cli.py                    # command-line interface
+    gui.py                    # Tkinter interface
+    lure_picker.py            # standalone lure recommender
+    weather.py                # OpenWeatherMap fetch/parse, shared by cli/gui/lure_picker
+    lures.py                  # tagged lure database + recommender
+    preferences.py            # per-species fishing condition ranges
+```
 
 ## Lure tagging system
 
