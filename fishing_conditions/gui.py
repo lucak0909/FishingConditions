@@ -5,9 +5,7 @@ from tkinter import messagebox, ttk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-import lures
-import preferences
-import weather
+from . import lures, preferences, weather
 
 
 def fishing_conditions(temperature, air_pressure, wind_speed, cloud_cover,
