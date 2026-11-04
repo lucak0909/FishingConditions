@@ -5,9 +5,7 @@ import time
 import matplotlib.pyplot as plt
 import pandas as pd
 
-import lures
-import preferences
-import weather
+from . import lures, preferences, weather
 
 fileName = "Conditions.csv"
 
